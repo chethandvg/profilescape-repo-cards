@@ -1,0 +1,136 @@
+# Profilescape Repo Cards: a single-purpose build of Profilescape (https://github.com/chethandvg/profilescape).
+# Generated from actions/manifest.json there; issues and pull requests are welcome upstream.
+name: Profilescape Repo Cards
+description: "Beautiful, self-updating repository cards for your GitHub profile README: stars, forks, languages and releases."
+author: Chethan D V
+branding:
+  icon: book
+  color: gray-dark
+
+inputs:
+  username:
+    description: >-
+      GitHub username to render cards for. Empty uses the owner of the repository running the
+      workflow.
+    required: false
+    default: ""
+  token:
+    description: >-
+      Token used to read profile data from the GitHub API. The default workflow token sees public
+      activity; pass a personal access token stored as a secret (for example `PROFILESCAPE_TOKEN`)
+      to include private repositories and contributions.
+    required: false
+    default: "${{ github.token }}"
+  cards:
+    description: >-
+      Comma-separated cards to render, in README order. Available: `stats`, `languages`, `3d`,
+      `grid`, `repos`, `hero`, `stack`, `socials`.
+    required: false
+    default: "repos"
+  theme:
+    description: >-
+      Colour theme id, for example `aurora`. Preview every theme in the playground at
+      https://chethandvg.github.io/profilescape.
+    required: false
+    default: "aurora"
+  modes:
+    description: >-
+      Colour modes to render: `dark`, `light` or both. With both, the README markup follows each
+      viewer's GitHub theme automatically.
+    required: false
+    default: "dark,light"
+  animate:
+    description: >-
+      Add subtle CSS animations. Viewers who prefer reduced motion always get the static final
+      frame.
+    required: false
+    default: "true"
+  history:
+    description: >-
+      Contribution history to fetch: `full` (every year since the account was created) or `year`
+      (the last 12 months, faster).
+    required: false
+    default: "full"
+  hide_languages:
+    description: >-
+      Comma-separated languages to leave out of language statistics, for example
+      `HTML,Jupyter Notebook`.
+    required: false
+    default: ""
+  exclude_repos:
+    description: "Comma-separated repositories (`name` or `owner/name`) to ignore in every card."
+    required: false
+    default: ""
+  include_private:
+    description: >-
+      Include private repositories the token can read in repository and language statistics.
+      Contribution counts always follow what the token can see, so use the default workflow token
+      for public-only counts.
+    required: false
+    default: "true"
+  repos:
+    description: >-
+      Comma-separated repositories for repo cards (`name` or `owner/name`). Empty uses your pinned
+      repositories, then your most starred.
+    required: false
+    default: ""
+  config:
+    description: >-
+      Optional JSON config with per-card options and colour overrides: a path relative to the
+      repository root (requires `actions/checkout`) or inline JSON.
+    required: false
+    default: ""
+  output_dir:
+    description: >-
+      Workspace directory the SVG files and a ready-to-paste `README-snippet.md` are written to, for
+      use by later steps.
+    required: false
+    default: "profilescape"
+  publish:
+    description: >-
+      Where to publish the SVG files: `branch` commits them to the output branch (only when
+      something changed), `none` only writes them to `output_dir`.
+    required: false
+    default: "branch"
+  branch:
+    description: >-
+      Dedicated branch that holds the published SVG files. It is replaced wholesale on every publish
+      (a single commit, so it never bloats your history); Profilescape refuses to overwrite your
+      default branch or any branch it did not create.
+    required: false
+    default: "profilescape-output"
+  commit_message:
+    description: Commit message for the output branch and README updates.
+    required: false
+    default: "chore: update profilescape cards"
+  readme:
+    description: >-
+      README to keep up to date, for example `README.md`. The cards are written between
+      `<!-- profilescape:start -->` and `<!-- profilescape:end -->` markers. Empty leaves READMEs
+      untouched.
+    required: false
+    default: ""
+  github_token:
+    description: >-
+      Token used to push the output branch and README update to this repository. Needs
+      `contents: write`.
+    required: false
+    default: "${{ github.token }}"
+
+outputs:
+  files:
+    description: >-
+      JSON array of the files written to `output_dir`, relative to the workspace: every SVG plus
+      `README-snippet.md`.
+  markup:
+    description: >-
+      Ready-to-paste README HTML for the rendered cards, switching between dark and light with the
+      viewer's theme.
+  base_url:
+    description: >-
+      Where the cards are served from: the raw URL of the output branch with `publish: branch`,
+      otherwise `output_dir`.
+
+runs:
+  using: node24
+  main: dist/index.mjs
